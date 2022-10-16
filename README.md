@@ -1,3 +1,3 @@
-# proto-deno
+# turbo-deno
 
-A template repository for projects in 🦕 [Deno](https://deno.land/).
+A repository for the :snail: 🦕 [Deno](https://deno.land/).
