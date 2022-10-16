@@ -13,6 +13,6 @@ export class Receipt extends DenoDB.Model {
   };
 
   static lineItems() {
-    this.hasMany(LineItem);
+    return this.hasMany(LineItem);
   }
 }
