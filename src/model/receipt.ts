@@ -10,6 +10,13 @@ export class Receipt extends DenoDB.Model {
       type: DenoDB.DataTypes.STRING,
       primaryKey: true,
     },
+    // receipt checkout status
+    status: DenoDB.DataTypes.enum([
+      "pending",
+      "complete",
+      "failed",
+      "cancelled",
+    ]),
   };
 
   static lineItems() {
