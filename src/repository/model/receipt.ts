@@ -1,4 +1,4 @@
-import { DenoDB } from "../../deps.ts";
+import { DenoDB } from "../../../deps.ts";
 import { LineItem } from "./line-item.ts";
 
 export class Receipt extends DenoDB.Model {

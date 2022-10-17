@@ -1,8 +1,8 @@
 import { DenoDB } from "./deps.ts";
-import { initRelations } from "./src/model/relations.ts";
-import { LineItem } from "./src/model/line-item.ts";
-import { Product } from "./src/model/product.ts";
-import { Receipt } from "./src/model/receipt.ts";
+import { initRelations } from "./src/repository/model/relations.ts";
+import { LineItem } from "./src/repository/model/line-item.ts";
+import { Product } from "./src/repository/model/product.ts";
+import { Receipt } from "./src/repository/model/receipt.ts";
 
 if (import.meta.main) {
   // TODO: move to a separate location

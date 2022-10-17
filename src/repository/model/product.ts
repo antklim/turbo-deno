@@ -1,4 +1,4 @@
-import { DenoDB } from "../../deps.ts";
+import { DenoDB } from "../../../deps.ts";
 
 export class Product extends DenoDB.Model {
   static table = "catalog"; // table name in DB

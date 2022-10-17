@@ -1,4 +1,4 @@
-import { DenoDB } from "../../deps.ts";
+import { DenoDB } from "../../../deps.ts";
 import { LineItem } from "./line-item.ts";
 import { Product } from "./product.ts";
 import { Receipt } from "./receipt.ts";
