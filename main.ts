@@ -5,6 +5,7 @@ import { Product } from "./src/model/product.ts";
 import { Receipt } from "./src/model/receipt.ts";
 
 if (import.meta.main) {
+  // TODO: move to a separate location
   const connector = new DenoDB.SQLite3Connector({
     filepath: "./shopping-cart.db",
   });
