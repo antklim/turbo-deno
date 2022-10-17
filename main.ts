@@ -41,6 +41,7 @@ if (import.meta.main) {
 
   await Receipt.create({
     id: "r1",
+    status: "pending",
   });
 
   await LineItem.create({
@@ -59,6 +60,7 @@ if (import.meta.main) {
 
   await Receipt.create({
     id: "r2",
+    status: "pending",
   });
 
   await LineItem.create({
