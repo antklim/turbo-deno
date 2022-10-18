@@ -11,7 +11,7 @@ export class Receipt extends DenoDB.Model {
       primaryKey: true,
     },
     // receipt checkout status
-    status: DenoDB.DataTypes.enum([
+    status: DenoDB.DataTypes.enum([ // TODO: use entity ReceiptStatus to build enum
       "pending",
       "complete",
       "failed",
