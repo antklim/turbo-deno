@@ -9,7 +9,7 @@ export interface Receipt {
 }
 
 export const newReceipt = (): Receipt => ({
-  id: "1",
+  id: crypto.randomUUID(),
   status: "pending",
   lineItems: [],
 });
