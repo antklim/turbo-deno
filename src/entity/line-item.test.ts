@@ -1,4 +1,9 @@
-import { assertEquals, assertExists, assertNotEquals } from "../../deps.ts";
+import {
+  assertEquals,
+  assertExists,
+  assertNotStrictEquals,
+  assertStrictEquals,
+} from "../../deps.ts";
 import { newLineItem } from "./line-item.ts";
 import { newProduct } from "./product.ts";
 import { newReceipt } from "./receipt.ts";
@@ -10,7 +15,7 @@ Deno.test("newLineItem creates a new instance of LineItem", () => {
   const li = newLineItem({ qty: 1, product, receipt });
 
   assertExists(li.id);
-  assertEquals(li.qty, 1);
+  assertStrictEquals(li.qty, 1);
   assertEquals(li.product, product);
   assertEquals(li.receipt, receipt);
 });
@@ -19,5 +24,5 @@ Deno.test("newLineItem creates line items with unique IDs", () => {
   const li1 = newLineItem({ qty: 1, product, receipt });
   const li2 = newLineItem({ qty: 1, product, receipt });
 
-  assertNotEquals(li1.id, li2.id);
+  assertNotStrictEquals(li1.id, li2.id);
 });
