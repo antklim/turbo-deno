@@ -13,3 +13,9 @@ export const newReceipt = (): Receipt => ({
   status: "pending",
   lineItems: [],
 });
+
+export const addLineItem = (receipt: Receipt, lineItem: LineItem): Receipt => {
+  // TODO: add check if receipt.id and lineItem.receipt.id are the same
+  receipt.lineItems.push(lineItem);
+  return receipt;
+};
