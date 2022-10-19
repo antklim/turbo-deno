@@ -3,3 +3,9 @@ export interface Product {
   name: string;
   price: number;
 }
+
+export const newProduct = ({ name, price }: Omit<Product, "id">): Product => ({
+  id: crypto.randomUUID(),
+  name,
+  price,
+});
