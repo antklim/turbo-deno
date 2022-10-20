@@ -7,11 +7,21 @@ import {
   assertEquals,
   assertExists,
   assertStrictEquals,
+  DenoDB,
 } from "../../../deps.ts";
 import { newProduct } from "../../entity/product.ts";
 import { addProduct } from "./add-product.ts";
+import { initDB } from "./db.ts";
+import { LineItem } from "../model/line-item.ts";
+import { Receipt } from "../model/receipt.ts";
 
 Deno.test("addProduct without receipt", async (t) => {
+  const connector = new DenoDB.SQLite3Connector({
+    filepath: "./test.db",
+  });
+
+  const db = await initDB(connector);
+
   const product = newProduct({ name: "iPhone", price: 76000 });
   const qty = 1;
 
@@ -20,6 +30,7 @@ Deno.test("addProduct without receipt", async (t) => {
   await t.step("creates a new receipt", () => {
     assertExists(receipt);
     assertStrictEquals(receipt.status, "pending");
+    assertExists(receipt.lineItems);
     assertStrictEquals(receipt.lineItems.length, 1);
   });
 
@@ -32,8 +43,21 @@ Deno.test("addProduct without receipt", async (t) => {
     assertEquals(lineItem.receipt, receipt);
   });
 
-  // await t.step("adds new receipt and line item to DB", () => {
-  // });
+  await t.step("adds new receipt to DB", async () => {
+    const dbReceipt = await Receipt.find(receipt.id);
+
+    assertExists(dbReceipt);
+    assertStrictEquals(dbReceipt.id, receipt.id);
+    assertStrictEquals(dbReceipt.status, receipt.status);
+  });
+
+  await t.step("adds a line item to DB", async () => {
+    const dbLineItems = await Receipt.where("id", receipt.id).lineItems();
+
+    assertExists(dbLineItems);
+  });
+
+  await db.close();
 });
 
 // Deno.test("addProduct adds line item to existing receipt", () => {

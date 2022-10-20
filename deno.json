@@ -24,6 +24,6 @@
     "cache-reload": "deno cache --reload --lock=lock.json deps.ts",
     "start": "deno run --allow-env=NODE_DEBUG --allow-read --allow-write main.ts",
     "start-cached-only": "deno run --allow-env=NODE_DEBUG --allow-read --allow-write --lock=lock.json --cached-only main.ts",
-    "test": "deno test -A --unstable"
+    "test": "deno test -A --unstable --allow-read --allow-write"
   }
 }

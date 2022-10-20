@@ -1,8 +1,8 @@
 import { DenoDB } from "./deps.ts";
-import { initRelations } from "./src/repository/model/relations.ts";
 import { LineItem } from "./src/repository/model/line-item.ts";
 import { Product } from "./src/repository/model/product.ts";
 import { Receipt } from "./src/repository/model/receipt.ts";
+import { initDB } from "./src/repository/sqlite/db.ts";
 
 if (import.meta.main) {
   // TODO: move to a separate location
@@ -10,16 +10,7 @@ if (import.meta.main) {
     filepath: "./shopping-cart.db",
   });
 
-  const db = new DenoDB.Database(connector);
-
-  initRelations();
-
-  // tables that depend on other tables should be linked
-  // after their dependencies. Because of LineItem has foreign key to
-  // Product and Receipt, it should be linked last.
-  db.link([Product, Receipt, LineItem]);
-
-  await db.sync({ drop: true });
+  const db = await initDB(connector);
 
   await Product.create({
     id: "p1", // TODO: add uuid

@@ -1,12 +1,13 @@
 import { newLineItem } from "../../entity/line-item.ts";
 import { Product } from "../../entity/product.ts";
 import { addLineItem, newReceipt, Receipt } from "../../entity/receipt.ts";
+import { Receipt as DBReceipt } from "../model/receipt.ts";
 
 /**
  * addProduct adds a product to a cart. It creates a new receipt when no receipt
  * provided as input. It adds a new line item to the receipt.
  */
-export const addProduct = (
+export const addProduct = async (
   { product, qty, receipt: r }: {
     product: Product;
     qty: number;
@@ -22,5 +23,10 @@ export const addProduct = (
 
   receipt = addLineItem(receipt, lineItem);
 
-  return Promise.resolve(receipt);
+  await DBReceipt.create({
+    id: receipt.id,
+    status: receipt.status,
+  });
+
+  return receipt;
 };
