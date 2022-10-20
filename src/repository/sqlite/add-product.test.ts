@@ -11,32 +11,36 @@ import {
 import { newProduct } from "../../entity/product.ts";
 import { addProduct } from "./add-product.ts";
 
-Deno.test("addProduct returns a new receipt with line item", async () => {
+Deno.test("addProduct without receipt", async (t) => {
   const product = newProduct({ name: "iPhone", price: 76000 });
   const qty = 1;
 
   const receipt = await addProduct({ qty, product });
 
-  assertExists(receipt);
-  assertStrictEquals(receipt.status, "pending");
-  assertStrictEquals(receipt.lineItems.length, 1);
+  await t.step("creates a new receipt", () => {
+    assertExists(receipt);
+    assertStrictEquals(receipt.status, "pending");
+    assertStrictEquals(receipt.lineItems.length, 1);
+  });
 
-  const lineItem = receipt.lineItems.at(0);
+  await t.step("creates a line item and adds it to a receipt", () => {
+    const lineItem = receipt.lineItems.at(0);
 
-  assertExists(lineItem);
-  assertEquals(lineItem.product, product);
-  assertStrictEquals(lineItem.qty, qty);
-  assertEquals(lineItem.receipt, receipt);
+    assertExists(lineItem);
+    assertEquals(lineItem.product, product);
+    assertStrictEquals(lineItem.qty, qty);
+    assertEquals(lineItem.receipt, receipt);
+  });
+
+  // await t.step("adds new receipt and line item to DB", () => {
+  // });
 });
 
-Deno.test("addProduct saves a new receipt with line item in DB", () => {
-});
+// Deno.test("addProduct adds line item to existing receipt", () => {
+// });
 
-Deno.test("addProduct adds line item to existing receipt", () => {
-});
+// Deno.test("addProduct adds new line item for repeating product", () => {
+// });
 
-Deno.test("addProduct adds new line item for repeating product", () => {
-});
-
-Deno.test("addProduct fails when receipt not found in DB", () => {
-});
+// Deno.test("addProduct fails when receipt not found in DB", () => {
+// });
