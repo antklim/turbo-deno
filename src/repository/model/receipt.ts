@@ -22,7 +22,4 @@ export class Receipt extends DenoDB.Model {
   static lineItems() {
     return this.hasMany(LineItem);
   }
-
-  id!: string;
-  status!: string;
 }

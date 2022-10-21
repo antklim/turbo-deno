@@ -1,6 +1,7 @@
 import { newLineItem } from "../../entity/line-item.ts";
 import { Product } from "../../entity/product.ts";
 import { addLineItem, newReceipt, Receipt } from "../../entity/receipt.ts";
+import { LineItem as DBLineItem } from "../model/line-item.ts";
 import { Receipt as DBReceipt } from "../model/receipt.ts";
 
 /**
@@ -26,6 +27,13 @@ export const addProduct = async (
   await DBReceipt.create({
     id: receipt.id,
     status: receipt.status,
+  });
+
+  await DBLineItem.create({
+    id: lineItem.id,
+    qty: lineItem.qty,
+    productId: product.id,
+    receiptId: receipt.id,
   });
 
   return receipt;
