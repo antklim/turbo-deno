@@ -12,7 +12,6 @@ import {
 import { newProduct } from "../../entity/product.ts";
 import { addProduct } from "./add-product.ts";
 import { initDB } from "./db.ts";
-import { LineItem } from "../model/line-item.ts";
 import { Receipt } from "../model/receipt.ts";
 
 Deno.test("addProduct without receipt", async (t) => {
