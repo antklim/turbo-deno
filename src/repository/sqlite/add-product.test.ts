@@ -6,6 +6,7 @@
 import {
   assertEquals,
   assertExists,
+  assertInstanceOf,
   assertStrictEquals,
   DenoDB,
 } from "../../../deps.ts";
@@ -63,18 +64,30 @@ Deno.test("addProduct without receipt", async (t) => {
     const dbLineItems = await Receipt.where("id", receipt.id).lineItems();
 
     assertExists(dbLineItems);
-    assertStrictEquals(dbLineItems.length, 1);
+    assertInstanceOf(dbLineItems, Array);
 
-    // TODO: add line item id assertion
+    const dbLineItem = dbLineItems.at(0);
+
+    assertExists(dbLineItem);
+    assertStrictEquals(dbLineItem.id, receipt.lineItems.at(0)?.id);
+    assertStrictEquals(dbLineItem.qty, 1);
+    assertStrictEquals(dbLineItem.productId, product.id);
+    assertStrictEquals(dbLineItem.receiptId, receipt.id);
   });
 
   await t.step("adds a line item to DB", async () => {
     const dbLineItems = await LineItem.where("receiptId", receipt.id).get();
 
     assertExists(dbLineItems);
-    assertStrictEquals(dbLineItems.length, 1);
+    assertInstanceOf(dbLineItems, Array);
 
-    // TODO: add line item id assertion
+    const dbLineItem = dbLineItems.at(0);
+
+    assertExists(dbLineItem);
+    assertStrictEquals(dbLineItem.id, receipt.lineItems.at(0)?.id);
+    assertStrictEquals(dbLineItem.qty, 1);
+    assertStrictEquals(dbLineItem.productId, product.id);
+    assertStrictEquals(dbLineItem.receiptId, receipt.id);
   });
 
   await db.close();

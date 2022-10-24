@@ -1,6 +1,7 @@
 export {
   assertEquals,
   assertExists,
+  assertInstanceOf,
   assertNotEquals,
   assertNotStrictEquals,
   assertStrictEquals,
