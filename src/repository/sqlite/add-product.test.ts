@@ -16,7 +16,6 @@ import { Receipt } from "../model/receipt.ts";
 import { LineItem } from "../model/line-item.ts";
 import { DBconnect } from "./test-helper.test.ts";
 
-// TODO: create better set up routine
 Deno.test("addProduct without receipt", async (t) => {
   const db = await DBconnect();
 
