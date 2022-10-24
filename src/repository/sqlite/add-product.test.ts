@@ -8,22 +8,17 @@ import {
   assertExists,
   assertInstanceOf,
   assertStrictEquals,
-  DenoDB,
 } from "../../../deps.ts";
 import { newProduct } from "../../entity/product.ts";
 import { addProduct } from "./add-product.ts";
-import { initDB } from "./db.ts";
 import { Product } from "../model/product.ts";
 import { Receipt } from "../model/receipt.ts";
 import { LineItem } from "../model/line-item.ts";
+import { DBconnect } from "./test-helper.test.ts";
 
 // TODO: create better set up routine
 Deno.test("addProduct without receipt", async (t) => {
-  const connector = new DenoDB.SQLite3Connector({
-    filepath: "./test.db",
-  });
-
-  const db = await initDB(connector);
+  const db = await DBconnect();
 
   const product = newProduct({ name: "iPhone", price: 76000 });
 
@@ -33,9 +28,7 @@ Deno.test("addProduct without receipt", async (t) => {
     price: product.price,
   });
 
-  const qty = 1;
-
-  const receipt = await addProduct({ qty, product });
+  const receipt = await addProduct({ qty: 1, product });
 
   await t.step("creates a new receipt", () => {
     assertExists(receipt);
@@ -49,7 +42,7 @@ Deno.test("addProduct without receipt", async (t) => {
 
     assertExists(lineItem);
     assertEquals(lineItem.product, product);
-    assertStrictEquals(lineItem.qty, qty);
+    assertStrictEquals(lineItem.qty, 1);
     assertEquals(lineItem.receipt, receipt);
   });
 
