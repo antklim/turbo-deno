@@ -11,9 +11,9 @@ import {
 } from "../../../deps.ts";
 import { newProduct } from "../../entity/product.ts";
 import { addProduct } from "./add-product.ts";
-import { Product } from "../model/product.ts";
-import { Receipt } from "../model/receipt.ts";
-import { LineItem } from "../model/line-item.ts";
+import { Product as DBProduct } from "../model/product.ts";
+import { Receipt as DBReceipt } from "../model/receipt.ts";
+import { LineItem as DBLineItem } from "../model/line-item.ts";
 import { DBconnect } from "./test-helper.test.ts";
 
 Deno.test("addProduct without receipt", async (t) => {
@@ -21,7 +21,7 @@ Deno.test("addProduct without receipt", async (t) => {
 
   const product = newProduct({ name: "iPhone", price: 76000 });
 
-  await Product.create({
+  await DBProduct.create({
     id: product.id,
     name: product.name,
     price: product.price,
@@ -46,14 +46,14 @@ Deno.test("addProduct without receipt", async (t) => {
   });
 
   await t.step("adds new receipt to DB", async () => {
-    const dbReceipt = await Receipt.find(receipt.id);
+    const dbReceipt = await DBReceipt.find(receipt.id);
 
     assertExists(dbReceipt);
     assertStrictEquals(dbReceipt.id, receipt.id);
     assertStrictEquals(dbReceipt.status, receipt.status);
 
     // receipt has line items
-    const dbLineItems = await Receipt.where("id", receipt.id).lineItems();
+    const dbLineItems = await DBReceipt.where("id", receipt.id).lineItems();
 
     assertExists(dbLineItems);
     assertInstanceOf(dbLineItems, Array);
@@ -68,7 +68,7 @@ Deno.test("addProduct without receipt", async (t) => {
   });
 
   await t.step("adds a line item to DB", async () => {
-    const dbLineItems = await LineItem.where("receiptId", receipt.id).get();
+    const dbLineItems = await DBLineItem.where("receiptId", receipt.id).get();
 
     assertExists(dbLineItems);
     assertInstanceOf(dbLineItems, Array);
