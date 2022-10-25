@@ -1,8 +1,3 @@
-// 1. creates a new receipt when no receipt provided
-// 2. adds a new line item to receipt
-// 3. returns an error when no receipt found in DB
-// 4. when called with the same product multiple times then a new line item added
-
 import {
   assertEquals,
   assertExists,
@@ -105,6 +100,14 @@ Deno.test("addProduct adds line item to existing receipt", async (t) => {
 
   const receipt = await addProduct({ qty: 1, product: iphone });
 
+  await t.step("DB has one line item before adding a new product", async () => {
+    const dbLineItems = await DBLineItem.where("receiptId", receipt.id).get();
+
+    assertExists(dbLineItems);
+    assertInstanceOf(dbLineItems, Array);
+    assertStrictEquals(dbLineItems.length, 1);
+  });
+
   await t.step(
     "creates a line item and adds it to an existing receipt",
     async () => {
@@ -115,11 +118,58 @@ Deno.test("addProduct adds line item to existing receipt", async (t) => {
     },
   );
 
+  await t.step("adds a new line item to DB", async () => {
+    const dbLineItems = await DBLineItem.where("receiptId", receipt.id).get();
+
+    assertExists(dbLineItems);
+    assertInstanceOf(dbLineItems, Array);
+    assertStrictEquals(dbLineItems.length, 2);
+  });
+
   await db.close();
 });
 
-// Deno.test("addProduct adds new line item for repeating product", () => {
-// });
+Deno.test("addProduct adds new line item for repeating product", async (t) => {
+  const db = await DBconnect();
+
+  const iphone = newProduct({ name: "iPhone", price: 76000 });
+
+  await DBProduct.create({
+    id: iphone.id,
+    name: iphone.name,
+    price: iphone.price,
+  });
+
+  const receipt = await addProduct({ qty: 1, product: iphone });
+
+  await t.step("DB has one line item before adding a new product", async () => {
+    const dbLineItems = await DBLineItem.where("receiptId", receipt.id).get();
+
+    assertExists(dbLineItems);
+    assertInstanceOf(dbLineItems, Array);
+    assertStrictEquals(dbLineItems.length, 1);
+  });
+
+  await t.step(
+    "creates a new line item regardless for the same product",
+    async () => {
+      const r = await addProduct({ qty: 2, product: iphone, receipt });
+
+      assertStrictEquals(r.id, receipt.id);
+      assertStrictEquals(r.lineItems.length, 2);
+    },
+  );
+
+  await t.step("adds a new line item to DB", async () => {
+    const dbLineItems = await DBLineItem.where("receiptId", receipt.id).get();
+
+    assertExists(dbLineItems);
+    assertInstanceOf(dbLineItems, Array);
+    assertStrictEquals(dbLineItems.length, 2);
+  });
+
+  await db.close();
+});
 
 // Deno.test("addProduct fails when receipt not found in DB", () => {
 // });
