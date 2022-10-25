@@ -19,15 +19,15 @@ import { DBconnect } from "./test-helper.test.ts";
 Deno.test("addProduct without receipt", async (t) => {
   const db = await DBconnect();
 
-  const product = newProduct({ name: "iPhone", price: 76000 });
+  const iphone = newProduct({ name: "iPhone", price: 76000 });
 
   await DBProduct.create({
-    id: product.id,
-    name: product.name,
-    price: product.price,
+    id: iphone.id,
+    name: iphone.name,
+    price: iphone.price,
   });
 
-  const receipt = await addProduct({ qty: 1, product });
+  const receipt = await addProduct({ qty: 1, product: iphone });
 
   await t.step("creates a new receipt", () => {
     assertExists(receipt);
@@ -40,7 +40,7 @@ Deno.test("addProduct without receipt", async (t) => {
     const lineItem = receipt.lineItems.at(0);
 
     assertExists(lineItem);
-    assertEquals(lineItem.product, product);
+    assertEquals(lineItem.product, iphone);
     assertStrictEquals(lineItem.qty, 1);
     assertEquals(lineItem.receipt, receipt);
   });
@@ -63,7 +63,7 @@ Deno.test("addProduct without receipt", async (t) => {
     assertExists(dbLineItem);
     assertStrictEquals(dbLineItem.id, receipt.lineItems.at(0)?.id);
     assertStrictEquals(dbLineItem.qty, 1);
-    assertStrictEquals(dbLineItem.productId, product.id);
+    assertStrictEquals(dbLineItem.productId, iphone.id);
     assertStrictEquals(dbLineItem.receiptId, receipt.id);
   });
 
@@ -78,15 +78,45 @@ Deno.test("addProduct without receipt", async (t) => {
     assertExists(dbLineItem);
     assertStrictEquals(dbLineItem.id, receipt.lineItems.at(0)?.id);
     assertStrictEquals(dbLineItem.qty, 1);
-    assertStrictEquals(dbLineItem.productId, product.id);
+    assertStrictEquals(dbLineItem.productId, iphone.id);
     assertStrictEquals(dbLineItem.receiptId, receipt.id);
   });
 
   await db.close();
 });
 
-// Deno.test("addProduct adds line item to existing receipt", () => {
-// });
+Deno.test("addProduct adds line item to existing receipt", async (t) => {
+  const db = await DBconnect();
+
+  const iphone = newProduct({ name: "iPhone", price: 76000 });
+  const ipad = newProduct({ name: "iPad", price: 85000 });
+
+  await DBProduct.create({
+    id: iphone.id,
+    name: iphone.name,
+    price: iphone.price,
+  });
+
+  await DBProduct.create({
+    id: ipad.id,
+    name: ipad.name,
+    price: ipad.price,
+  });
+
+  const receipt = await addProduct({ qty: 1, product: iphone });
+
+  await t.step(
+    "creates a line item and adds it to an existing receipt",
+    async () => {
+      const r = await addProduct({ qty: 2, product: ipad, receipt });
+
+      assertStrictEquals(r.id, receipt.id);
+      assertStrictEquals(r.lineItems.length, 2);
+    },
+  );
+
+  await db.close();
+});
 
 // Deno.test("addProduct adds new line item for repeating product", () => {
 // });

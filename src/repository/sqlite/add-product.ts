@@ -18,16 +18,20 @@ export const addProduct = async (
   // TODO: check if receipt parameter provided but it does not exist in DB
   // then return error
 
-  let receipt = r ?? newReceipt();
+  let receipt = r;
+
+  if (!receipt) {
+    receipt = newReceipt();
+
+    await DBReceipt.create({
+      id: receipt.id,
+      status: receipt.status,
+    });
+  }
 
   const lineItem = newLineItem({ qty, product, receipt });
 
   receipt = addLineItem(receipt, lineItem);
-
-  await DBReceipt.create({
-    id: receipt.id,
-    status: receipt.status,
-  });
 
   await DBLineItem.create({
     id: lineItem.id,
