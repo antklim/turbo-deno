@@ -18,6 +18,8 @@ export const addProduct = async (
   // TODO: check if receipt parameter provided but it does not exist in DB
   // then return error
 
+  // TODO: move business logic to service
+
   let receipt = r;
 
   if (!receipt) {
