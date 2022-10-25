@@ -9,22 +9,15 @@ import { Product as DBProduct } from "../model/product.ts";
 import { LineItem as DBLineItem } from "../model/line-item.ts";
 import { DBconnect } from "./test-helper.test.ts";
 
-Deno.test("addProduct adds line item to existing receipt", async (t) => {
+Deno.test("addProduct adds new line item for repeating product", async (t) => {
   const db = await DBconnect();
 
   const iphone = newProduct({ name: "iPhone", price: 76000 });
-  const ipad = newProduct({ name: "iPad", price: 85000 });
 
   await DBProduct.create({
     id: iphone.id,
     name: iphone.name,
     price: iphone.price,
-  });
-
-  await DBProduct.create({
-    id: ipad.id,
-    name: ipad.name,
-    price: ipad.price,
   });
 
   const receipt = await addProduct({ qty: 1, product: iphone });
@@ -38,9 +31,9 @@ Deno.test("addProduct adds line item to existing receipt", async (t) => {
   });
 
   await t.step(
-    "creates a line item and adds it to an existing receipt",
+    "creates a new line item regardless for the same product",
     async () => {
-      const r = await addProduct({ qty: 2, product: ipad, receipt });
+      const r = await addProduct({ qty: 2, product: iphone, receipt });
 
       assertStrictEquals(r.id, receipt.id);
       assertStrictEquals(r.lineItems.length, 2);
@@ -57,6 +50,3 @@ Deno.test("addProduct adds line item to existing receipt", async (t) => {
 
   await db.close();
 });
-
-// Deno.test("addProduct fails when receipt not found in DB", () => {
-// });
