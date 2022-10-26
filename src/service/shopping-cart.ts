@@ -1,5 +1,5 @@
 import { Product } from "../entity/product.ts";
-import { Receipt } from "../entity/receipt.ts";
+import { newReceipt, Receipt } from "../entity/receipt.ts";
 import { ShoppingCart } from "./repository.ts";
 
 interface AddProductArgs {
@@ -8,6 +8,14 @@ interface AddProductArgs {
   receipt?: Receipt;
 }
 
-// deno-lint-ignore no-unused-vars
-export const addProduct = (r: ShoppingCart) => {
+export const addProduct = async (repo: ShoppingCart, args: AddProductArgs) => {
+  const { receipt: r } = args;
+
+  const receipt = r ?? newReceipt();
+
+  if (!r) {
+    await repo.createCart(receipt);
+  }
+
+  return;
 };
